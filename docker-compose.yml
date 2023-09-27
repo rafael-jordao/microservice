@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  user-ms:
+    build:
+      context: ./UserMicroservice
+      dockerfile: userMs.dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - user-db
+    environment:
+      ConnectionStrings_DefaultConnection: "Host=user-db;Port=5432;Database=postgres;Username=postgres;Password=postgres"
+  user-db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/user-ms-data
+    networks:
+      - ms-network
+  post-ms:
+    build:
+      context: ./PostMicroservice
+      dockerfile: postsMs.dockerfile
+    ports:
+      - "5002:5002"
+    depends_on:
+      - post-db
+    environment:
+      ConnectionStrings_DefaultConnection: "Host=post-db;Port=5433;Database=postgres;Username=postgres;Password=postgres"
+  post-db:
+    image: postgres:latest
+    ports:
+      - "5433:5433"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/post-ms-data
+    networks:
+      - ms-network
+  api-gateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: apiGateway.dockerfile # Crie um Dockerfile para o API Gateway, se necessário
+    ports:
+      - "5003:5003" # Porta para o API Gateway
+    depends_on:
+      - user-ms
+      - post-ms
+    environment:
+      OCELOT_CONFIG_FILE: "./ApiGateway/ocelot.json" # Caminho para o arquivo de configuração do Ocelot
+    networks:
+      - ms-network
+
+networks:
+  ms-network:
+
+
+volumes:
+  pgdata: {}

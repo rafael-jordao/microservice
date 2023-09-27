@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "0GSW7Hv/TWDs5UvH94WaAtXTsmQ3Y0eR0Hcdn3NMN9I=",
+  "Source": "PostMicroservice",
+  "BasePath": "_content/PostMicroservice",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
